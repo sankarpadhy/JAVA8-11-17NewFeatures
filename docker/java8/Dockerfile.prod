@@ -1,0 +1,33 @@
+FROM maven:3.8-openjdk-8-slim AS builder
+
+# Set working directory
+WORKDIR /build
+
+# Copy only pom files first
+COPY ./pom.xml /build/
+COPY ./java8-features/pom.xml /build/java8-features/
+COPY ./java11-features/pom.xml /build/java11-features/
+COPY ./java17-features/pom.xml /build/java17-features/
+
+# Download dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY . /build/
+
+# Build application
+RUN mvn clean package -DskipTests
+
+# Create minimal runtime image
+FROM openjdk:8-jre-slim
+
+WORKDIR /app
+
+# Copy built artifacts from builder stage
+COPY --from=builder /build/java8-features/target/java8-features-*.jar /app/java8-features.jar
+
+# Set production environment variables
+ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
+
+# Run application
+CMD ["java", "-jar", "java8-features.jar"]

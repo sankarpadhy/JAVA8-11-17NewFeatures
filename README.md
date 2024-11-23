@@ -164,6 +164,221 @@ docker-compose up java11
 docker-compose up java17
 ```
 
+## Docker Environments
+
+### Development Environment
+
+For development work with hot-reloading and debugging capabilities:
+
+```bash
+# Start all development containers
+docker-compose --profile dev up
+
+# Start specific Java version for development
+docker-compose --profile dev up java8-dev
+docker-compose --profile dev up java11-dev
+docker-compose --profile dev up java17-dev
+```
+
+Development features:
+- Source code hot-reloading
+- Remote debugging enabled
+- Development tools (git, vim, curl)
+- Maven repository caching
+- Larger heap size for development
+
+### Production Environment
+
+For running optimized, production-ready containers:
+
+```bash
+# Start all production containers
+docker-compose --profile prod up
+
+# Start specific Java version for production
+docker-compose --profile prod up java8-prod
+docker-compose --profile prod up java11-prod
+docker-compose --profile prod up java17-prod
+```
+
+Production features:
+- Multi-stage builds for smaller images
+- JRE-only runtime
+- Optimized JVM settings
+- Container-aware memory limits
+- Security hardening
+
+### Test Environment
+
+For running tests and continuous integration:
+
+```bash
+# Run all tests
+docker-compose --profile test up
+
+# Run tests with coverage
+docker-compose --profile ci up ci-runner
+```
+
+Test features:
+- Dedicated test runner
+- Code coverage reporting
+- Integration test profile
+- Parallel test execution
+- Test results persistence
+
+### Advanced Docker Usage
+
+#### Remote Debugging
+
+Java 8:
+```bash
+# Connect debugger to localhost:5005
+docker-compose --profile dev up java8-dev
+```
+
+Java 11:
+```bash
+# Connect debugger to localhost:5006
+docker-compose --profile dev up java11-dev
+```
+
+Java 17:
+```bash
+# Connect debugger to localhost:5007
+docker-compose --profile dev up java17-dev
+```
+
+#### Performance Tuning
+
+1. Container Memory Settings:
+```bash
+# Development (per container)
+MAVEN_OPTS=-Xmx512m
+
+# Production
+JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
+```
+
+2. Maven Repository Caching:
+```bash
+# Persist Maven cache
+docker volume create --name maven-repo
+docker-compose --profile dev up
+```
+
+### Extended Troubleshooting Guide
+
+1. **Container Startup Issues**
+
+```bash
+# Check container logs
+docker-compose logs [service-name]
+
+# Check container status
+docker-compose ps
+
+# Rebuild specific service
+docker-compose build --no-cache [service-name]
+```
+
+2. **Memory-Related Problems**
+
+```bash
+# Check container memory usage
+docker stats
+
+# Increase container memory limit
+docker-compose up -d --memory=4g [service-name]
+
+# Clear Docker system
+docker system prune -a --volumes
+```
+
+3. **Network Issues**
+
+```bash
+# Check network connectivity
+docker network ls
+docker network inspect java8-11-17_default
+
+# Reset Docker network
+docker-compose down
+docker network prune
+docker-compose up
+```
+
+4. **Volume Mounting Issues**
+
+```bash
+# Check volume mounts
+docker volume ls
+docker volume inspect maven-repo
+
+# Reset volumes
+docker-compose down -v
+docker volume rm maven-repo
+```
+
+5. **Build Performance Issues**
+
+```bash
+# Clean Docker build cache
+docker builder prune
+
+# Use BuildKit for faster builds
+DOCKER_BUILDKIT=1 docker-compose build
+```
+
+### Common Error Solutions
+
+1. **Maven Build Failures**
+```bash
+# Clear Maven cache
+docker-compose run --rm java8-dev rm -rf ~/.m2/repository
+```
+
+2. **Port Conflicts**
+```bash
+# Check port usage
+netstat -ano | findstr "8080"
+netstat -ano | findstr "5005"
+```
+
+3. **Container Resource Issues**
+```bash
+# Monitor resource usage
+docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
+```
+
+4. **Permission Problems**
+```bash
+# Fix volume permissions
+docker-compose run --rm java8-dev chown -R $(id -u):$(id -g) /app
+```
+
+### Best Practices
+
+1. **Development Workflow**
+   - Use development profile for coding
+   - Use production profile for deployment
+   - Use test profile for continuous integration
+
+2. **Resource Management**
+   - Monitor container resources
+   - Use volume mounts efficiently
+   - Clean up unused resources regularly
+
+3. **Security**
+   - Use non-root users in production
+   - Scan images for vulnerabilities
+   - Keep base images updated
+
+4. **Performance**
+   - Use multi-stage builds
+   - Optimize layer caching
+   - Implement proper resource limits
+
 ## Running with Docker
 
 If you don't have Java installed locally, you can use Docker to run and test the application. This project includes Docker configurations for all three Java versions (8, 11, and 17).

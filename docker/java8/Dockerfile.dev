@@ -1,0 +1,29 @@
+FROM openjdk:8-jdk
+
+# Install development tools
+RUN apt-get update && apt-get install -y \
+    git \
+    vim \
+    curl \
+    wget \
+    maven \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set up development environment
+ENV MAVEN_CONFIG=/root/.m2
+WORKDIR /app
+
+# Copy only pom files first for better caching
+COPY ./pom.xml /app/
+COPY ./java8-features/pom.xml /app/java8-features/
+COPY ./java11-features/pom.xml /app/java11-features/
+COPY ./java17-features/pom.xml /app/java17-features/
+
+# Download dependencies
+RUN mvn dependency:go-offline -B
+
+# Add source code volume mount point
+VOLUME ["/app/src"]
+
+# Default command for development
+CMD ["mvn", "clean", "test", "-pl", "java8-features"]

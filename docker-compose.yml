@@ -1,20 +1,109 @@
 version: '3.8'
 
 services:
-  java8-demo:
+  # Development Services
+  java8-dev:
     build:
       context: .
-      dockerfile: docker/java8/Dockerfile
-    container_name: java8-features-demo
+      dockerfile: docker/java8/Dockerfile.dev
+    profiles: ["dev", "test"]
+    volumes:
+      - .:/app
+      - maven-repo:/root/.m2
+    environment:
+      - MAVEN_OPTS=-Xmx512m
+    ports:
+      - "8080:8080"
+      - "5005:5005"  # Debug port
 
-  java11-demo:
+  java11-dev:
     build:
       context: .
-      dockerfile: docker/java11/Dockerfile
-    container_name: java11-features-demo
+      dockerfile: docker/java11/Dockerfile.dev
+    profiles: ["dev", "test"]
+    volumes:
+      - .:/app
+      - maven-repo:/root/.m2
+    environment:
+      - MAVEN_OPTS=-Xmx512m
+    ports:
+      - "8081:8080"
+      - "5006:5005"  # Debug port
 
-  java17-demo:
+  java17-dev:
     build:
       context: .
-      dockerfile: docker/java17/Dockerfile
-    container_name: java17-features-demo
+      dockerfile: docker/java17/Dockerfile.dev
+    profiles: ["dev", "test"]
+    volumes:
+      - .:/app
+      - maven-repo:/root/.m2
+    environment:
+      - MAVEN_OPTS=-Xmx512m
+    ports:
+      - "8082:8080"
+      - "5007:5005"  # Debug port
+
+  # Production Services
+  java8-prod:
+    build:
+      context: .
+      dockerfile: docker/java8/Dockerfile.prod
+    profiles: ["prod"]
+    environment:
+      - JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    ports:
+      - "8080:8080"
+
+  java11-prod:
+    build:
+      context: .
+      dockerfile: docker/java11/Dockerfile.prod
+    profiles: ["prod"]
+    environment:
+      - JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    ports:
+      - "8081:8080"
+
+  java17-prod:
+    build:
+      context: .
+      dockerfile: docker/java17/Dockerfile.prod
+    profiles: ["prod"]
+    environment:
+      - JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    ports:
+      - "8082:8080"
+
+  # Test Runner Service
+  test-runner:
+    build:
+      context: .
+      dockerfile: docker/java17/Dockerfile.dev
+    profiles: ["test"]
+    volumes:
+      - .:/app
+      - maven-repo:/root/.m2
+    environment:
+      - MAVEN_OPTS=-Xmx1024m
+    command: mvn clean test
+
+  # Continuous Integration Service
+  ci-runner:
+    build:
+      context: .
+      dockerfile: docker/java17/Dockerfile.prod
+    profiles: ["ci"]
+    volumes:
+      - .:/app
+      - maven-repo:/root/.m2
+    environment:
+      - MAVEN_OPTS=-Xmx2048m
+    command: >
+      mvn clean verify
+        -Pintegration-test
+        -Dmaven.test.failure.ignore=true
+        -Djacoco.destFile=/app/target/jacoco.exec
+
+volumes:
+  maven-repo:
