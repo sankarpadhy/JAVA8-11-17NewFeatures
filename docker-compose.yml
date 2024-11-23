@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  java8-demo:
+    build:
+      context: .
+      dockerfile: docker/java8/Dockerfile
+    container_name: java8-features-demo
+
+  java11-demo:
+    build:
+      context: .
+      dockerfile: docker/java11/Dockerfile
+    container_name: java11-features-demo
+
+  java17-demo:
+    build:
+      context: .
+      dockerfile: docker/java17/Dockerfile
+    container_name: java17-features-demo
