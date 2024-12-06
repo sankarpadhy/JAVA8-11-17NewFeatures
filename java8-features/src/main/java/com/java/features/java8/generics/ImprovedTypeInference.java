@@ -41,7 +41,7 @@ public class ImprovedTypeInference {
     /**
      * Generic method with nested generic parameters
      */
-    public static <T> List<List<T>> groupItems(List<T> items, Function<T, String> classifier) {
+    public static <T> List<List<T>> groupItems(List<T> items, Function<T, Integer> classifier) {
         return items.stream()
                 .collect(Collectors.groupingBy(classifier))
                 .values()
@@ -54,7 +54,7 @@ public class ImprovedTypeInference {
      */
     public static <T> List<T> createSpecialList() {
         // Diamond operator with anonymous inner class
-        return new ArrayList<>() {
+        return new ArrayList<T>() {
             @Override
             public boolean add(T e) {
                 System.out.println("Adding: " + e);
@@ -118,11 +118,17 @@ public class ImprovedTypeInference {
         // Type inference with nested generics
         List<List<String>> grouped = groupItems(
                 Arrays.asList("apple", "banana", "cherry"),
-                String::substring // Using first letter as classifier
+                s -> s.length() // Using string length as classifier
         );
 
-        // Diamond operator with anonymous inner class
-        List<String> specialList = createSpecialList();
+        // Diamond operator with anonymous inner class (Java 8 compatible)
+        List<String> specialList = new ArrayList<String>() {
+            @Override
+            public boolean add(String e) {
+                System.out.println("Adding: " + e);
+                return super.add(e);
+            }
+        };
         specialList.add("test");
 
         // Complex type inference with nested generics and method chaining
@@ -143,8 +149,8 @@ public class ImprovedTypeInference {
         Function<String, String> upperCase = String::toUpperCase;
         Function<String, Integer> composed = compose(upperCase, String::length);
 
-        // Using var with generic types (Java 10+)
-        var result = new ArrayList<Map<String, List<Integer>>>();
+        // Using explicit type instead of var
+        List<Map<String, List<Integer>>> result = new ArrayList<>();
     }
 
     /**
@@ -174,6 +180,6 @@ public class ImprovedTypeInference {
     public static <T extends Comparable<T> & Cloneable> T max(List<T> list) {
         return list.stream()
                 .max(Comparable::compareTo)
-                .orElseThrow();
+                .orElseThrow(RuntimeException::new); // Java 8 compatible
     }
 }

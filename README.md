@@ -1,533 +1,911 @@
-# Java Feature Evolution (Java 8 to 17) Demo Project
+# Java Features Demo Project
 
-A comprehensive demonstration project showcasing the evolution of Java features from version 8 to 17. This project is structured as a multi-module Maven project with detailed examples, documentation, and tests.
+This project demonstrates the evolution of Java features from version 8 through 17, organized in a modular structure with Docker-based development environments.
 
 ## Project Structure
 
 ```
 Java8-11-17/
-├── java8-features/
-│   └── src/
-│       ├── main/java/com/java/features/java8/
-│       │   ├── lambda/          # Lambda expressions and functional interfaces
-│       │   ├── stream/          # Stream API examples
-│       │   ├── datetime/        # Date/Time API
-│       │   ├── optional/        # Optional API
-│       │   ├── nashorn/         # JavaScript engine
-│       │   ├── concurrent/      # StampedLock and LongAdder
-│       │   ├── base64/          # Base64 encoding/decoding
-│       │   ├── annotations/     # Repeating and Type annotations
-│       │   ├── map/            # Enhanced Map API
-│       │   └── generics/       # Improved type inference
-│       └── test/
-├── java11-features/
-│   └── src/
-│       ├── main/java/com/java/features/java11/
-│       │   ├── string/         # String API enhancements
-│       │   └── http/           # HTTP Client API
-│       └── test/
-├── java17-features/
-│   └── src/
-│       ├── main/java/com/java/features/java17/
-│       │   ├── records/        # Records
-│       │   ├── sealed/         # Sealed classes
-│       │   └── pattern/        # Pattern matching
-│       └── test/
-├── docker/
+├── docker/                     # Docker configuration files
 │   ├── java8/
+│   ├── java9/
 │   ├── java11/
 │   └── java17/
-├── pom.xml
-└── docker-compose.yml
+├── java8-features/            # Java 8 feature demonstrations
+├── java9-features/            # Java 9 feature demonstrations
+├── java11-features/           # Java 11 feature demonstrations
+├── java17-features/           # Java 17 feature demonstrations
+├── docker-compose.yml         # Docker Compose configuration
+└── pom.xml                    # Parent POM file
 ```
 
-## Features Demonstrated
+## Module Overview
 
-### Java 8 Features
+### 1. java8-features
+- Demonstrates Java 8 features including:
+  - Lambda expressions
+  - Stream API
+  - Date/Time API
+  - Optional class
+  - Default methods
 
-1. **Lambda Expressions and Functional Interfaces**
-   - Custom functional interfaces with default methods
-   - Method references
-   - Type inference
-   - Exception handling in lambdas
-   - Currying and composition
+### 2. java9-features
+- Showcases Java 9 enhancements:
+  - Module system
+  - Collection factory methods
+  - Private interface methods
+  - Stream API improvements
 
-2. **Stream API**
-   - Filtering and mapping
-   - Reduction operations
-   - Parallel streams
-   - Custom collectors
-   - Infinite streams
+### 3. java11-features
+- Highlights Java 11 additions:
+  - Local variable syntax for lambda
+  - HTTP Client API
+  - String API enhancements
+  - File API improvements
 
-3. **Optional API**
-   - Creation and manipulation
-   - Chaining operations
-   - Integration with Stream API
+### 4. java17-features
+- Latest Java features including:
+  - Pattern matching
+  - Records
+  - Sealed classes
+  - Text blocks
 
-4. **Date/Time API**
-   - LocalDate, LocalTime, LocalDateTime
-   - ZonedDateTime
-   - Period and Duration
-   - Temporal adjusters
+## Maven Structure
 
-5. **JavaScript Engine (Nashorn)**
-   - JavaScript evaluation
-   - Java-JavaScript interop
-   - Script file loading
+The project uses a multi-module Maven structure for managing different Java version features.
 
-6. **Concurrent Utilities**
-   - StampedLock with optimistic reading
-   - LongAdder for high-concurrency counting
-   - DoubleAdder for concurrent double operations
+### Parent POM (Root `pom.xml`)
 
-7. **Base64 Encoding/Decoding**
-   - Basic encoding/decoding
-   - URL-safe encoding
-   - MIME encoding
-   - Streaming support
-
-8. **Enhanced Annotations**
-   - Repeating annotations
-   - Type annotations
-   - Annotation composition
-
-9. **Map API Enhancements**
-   - putIfAbsent
-   - computeIfAbsent/Present
-   - merge operations
-   - forEach iteration
-
-10. **Improved Type Inference**
-    - Diamond operator enhancements
-    - Generic method type inference
-    - Lambda type inference
-
-### Java 11 Features
-
-1. **String API Enhancements**
-   - isBlank(), lines(), strip()
-   - repeat() method
-   - String processing improvements
-
-2. **HTTP Client API**
-   - Synchronous and asynchronous requests
-   - WebSocket support
-   - HTTP/2 support
-
-### Java 17 Features
-
-1. **Records**
-   - Compact constructors
-   - Custom accessors
-   - Pattern matching
-
-2. **Sealed Classes**
-   - Inheritance control
-   - Pattern matching integration
-   - Exhaustive switch statements
-
-3. **Pattern Matching**
-   - instanceof patterns
-   - Switch expressions
-   - Guard patterns
-
-## Getting Started
-
-### Prerequisites
-- JDK 8, 11, and 17 installed
-- Maven 3.6+
-- Docker (optional, for containerized execution)
-
-### Building the Project
-```bash
-mvn clean install
+```xml
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>com.java.features</groupId>
+    <artifactId>java-features-demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    
+    <!-- Define modules -->
+    <modules>
+        <module>java8-features</module>
+        <module>java9-features</module>
+        <module>java11-features</module>
+        <module>java17-features</module>
+    </modules>
+    
+    <!-- Common properties used across all modules -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit.version>5.9.2</junit.version>
+        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+        <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
+    </properties>
+    
+    <!-- Dependency Management - Versions for all modules -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- JUnit Jupiter API -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
+    <!-- Common build configuration -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Compiler plugin configuration -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin.version}</version>
+                </plugin>
+                
+                <!-- Surefire plugin for tests -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
 ```
 
-### Running Examples
-Each module can be run independently:
-```bash
-# Java 8 features
-mvn exec:java -pl java8-features -Dexec.mainClass="com.java.features.java8.lambda.LambdaExamples"
+### Module POM (e.g., `java8-features/pom.xml`)
 
-# Java 11 features
-mvn exec:java -pl java11-features -Dexec.mainClass="com.java.features.java11.string.StringAPIEnhancements"
-
-# Java 17 features
-mvn exec:java -pl java17-features -Dexec.mainClass="com.java.features.java17.records.RecordExamples"
+```xml
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    
+    <!-- Parent POM reference -->
+    <parent>
+        <groupId>com.java.features</groupId>
+        <artifactId>java-features-demo</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    
+    <artifactId>java8-features</artifactId>
+    
+    <!-- Java 8 specific properties -->
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+    
+    <!-- Module specific dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <!-- Version inherited from parent -->
+        </dependency>
+        
+        <!-- Additional Java 8 specific dependencies -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <!-- Compiler configuration for Java 8 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            
+            <!-- Test configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkCount>0</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
 ```
 
-### Docker Support
-Run examples in containers:
-```bash
-docker-compose up java8
-docker-compose up java11
-docker-compose up java17
+### Key Concepts Explained
+
+1. **Parent POM Features**:
+   - `<packaging>pom</packaging>`: Indicates this is a parent project
+   - `<modules>`: Lists all child modules
+   - `<properties>`: Defines variables used across modules
+   - `<dependencyManagement>`: Controls versions of dependencies
+   - `<pluginManagement>`: Defines common plugin configurations
+
+2. **Module POM Features**:
+   - `<parent>`: References the parent POM
+   - Module-specific `<properties>`: Override or add to parent properties
+   - `<dependencies>`: Module-specific dependencies
+   - Version-specific plugin configurations
+
+3. **Dependency Management**:
+   - Parent POM defines versions in `<dependencyManagement>`
+   - Child modules don't need to specify versions for managed dependencies
+   - Ensures version consistency across modules
+
+4. **Build Configuration**:
+   - Parent POM defines common plugin configurations
+   - Modules can override or extend these configurations
+   - Specific Java version settings in each module
+
+5. **Test Configuration**:
+   - Common test framework (JUnit 5) defined in parent
+   - Module-specific Surefire plugin settings
+   - Custom test configurations per Java version
+
+This structure allows for:
+- Consistent dependency versions across modules
+- Version-specific Java configurations
+- Centralized build management
+- Module-specific customizations when needed
+
+## Docker Environment
+
+### Understanding Docker Concepts
+
+1. **Docker Images vs Containers**:
+   - An image is like a blueprint (e.g., OpenJDK 8)
+   - A container is a running instance of that image
+   - Multiple containers can run from the same image
+
+2. **Volume Mounting**:
+   - Allows sharing files between host and container
+   - Changes in mounted files are immediately visible
+   - Persists data even after container stops
+
+3. **Docker Compose**:
+   - Tool for defining multi-container applications
+   - Uses YAML format for configuration
+   - Manages networks, volumes, and services
+
+### Project Docker Structure
+
+```plaintext
+docker/
+├── java8/
+│   └── Dockerfile.dev         # Java 8 development environment
+├── java9/
+│   └── Dockerfile.dev         # Java 9 development environment
+├── java11/
+│   └── Dockerfile.dev         # Java 11 development environment
+└── java17/
+    └── Dockerfile.dev         # Java 17 development environment
 ```
 
-## Docker Environments
+### Development Dockerfile Example (java8/Dockerfile.dev)
 
-### Development Environment
+```dockerfile
+# Base image with OpenJDK 8
+FROM openjdk:8-jdk
 
-For development work with hot-reloading and debugging capabilities:
+# Install required tools
+RUN apt-get update && apt-get install -y \
+    git \
+    vim \
+    curl \
+    wget \
+    maven \
+    && rm -rf /var/lib/apt/lists/*
 
-```bash
-# Start all development containers
-docker-compose --profile dev up
+# Set working directory
+WORKDIR /app
 
-# Start specific Java version for development
-docker-compose --profile dev up java8-dev
-docker-compose --profile dev up java11-dev
-docker-compose --profile dev up java17-dev
+# Copy Maven files for dependency caching
+COPY ./pom.xml /app/
+COPY ./java8-features/pom.xml /app/java8-features/
+
+# Download dependencies
+RUN mvn dependency:go-offline -B -P java8
+
+# Enable remote debugging
+ENV JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
 ```
 
-Development features:
-- Source code hot-reloading
-- Remote debugging enabled
-- Development tools (git, vim, curl)
-- Maven repository caching
-- Larger heap size for development
+### Docker Compose Configuration (docker-compose.yml)
 
-### Production Environment
+```yaml
+version: '3.8'
 
-For running optimized, production-ready containers:
+services:
+  # Java 8 Development Environment
+  java8-dev:
+    build:
+      context: .
+      dockerfile: docker/java8/Dockerfile.dev
+    profiles: ["dev"]  # Only start when dev profile is active
+    volumes:
+      # Mount source code directory
+      - .:/app
+      # Share Maven repository
+      - maven-repo:/root/.m2
+    environment:
+      # Maven memory settings
+      - MAVEN_OPTS=-Xmx512m
+    ports:
+      # Application port
+      - "8080:8080"
+      # Debug port
+      - "5005:5005"
 
-```bash
-# Start all production containers
-docker-compose --profile prod up
+  # Similar configurations for other Java versions...
 
-# Start specific Java version for production
-docker-compose --profile prod up java8-prod
-docker-compose --profile prod up java11-prod
-docker-compose --profile prod up java17-prod
+volumes:
+  maven-repo:  # Named volume for Maven repository
 ```
 
-Production features:
-- Multi-stage builds for smaller images
-- JRE-only runtime
-- Optimized JVM settings
-- Container-aware memory limits
-- Security hardening
-
-### Test Environment
-
-For running tests and continuous integration:
-
-```bash
-# Run all tests
-docker-compose --profile test up
-
-# Run tests with coverage
-docker-compose --profile ci up ci-runner
-```
-
-Test features:
-- Dedicated test runner
-- Code coverage reporting
-- Integration test profile
-- Parallel test execution
-- Test results persistence
-
-### Advanced Docker Usage
-
-#### Remote Debugging
-
-Java 8:
-```bash
-# Connect debugger to localhost:5005
-docker-compose --profile dev up java8-dev
-```
-
-Java 11:
-```bash
-# Connect debugger to localhost:5006
-docker-compose --profile dev up java11-dev
-```
-
-Java 17:
-```bash
-# Connect debugger to localhost:5007
-docker-compose --profile dev up java17-dev
-```
-
-#### Performance Tuning
-
-1. Container Memory Settings:
-```bash
-# Development (per container)
-MAVEN_OPTS=-Xmx512m
-
-# Production
-JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
-```
-
-2. Maven Repository Caching:
-```bash
-# Persist Maven cache
-docker volume create --name maven-repo
-docker-compose --profile dev up
-```
-
-### Extended Troubleshooting Guide
-
-1. **Container Startup Issues**
-
-```bash
-# Check container logs
-docker-compose logs [service-name]
-
-# Check container status
-docker-compose ps
-
-# Rebuild specific service
-docker-compose build --no-cache [service-name]
-```
-
-2. **Memory-Related Problems**
-
-```bash
-# Check container memory usage
-docker stats
-
-# Increase container memory limit
-docker-compose up -d --memory=4g [service-name]
-
-# Clear Docker system
-docker system prune -a --volumes
-```
-
-3. **Network Issues**
-
-```bash
-# Check network connectivity
-docker network ls
-docker network inspect java8-11-17_default
-
-# Reset Docker network
-docker-compose down
-docker network prune
-docker-compose up
-```
-
-4. **Volume Mounting Issues**
-
-```bash
-# Check volume mounts
-docker volume ls
-docker volume inspect maven-repo
-
-# Reset volumes
-docker-compose down -v
-docker volume rm maven-repo
-```
-
-5. **Build Performance Issues**
-
-```bash
-# Clean Docker build cache
-docker builder prune
-
-# Use BuildKit for faster builds
-DOCKER_BUILDKIT=1 docker-compose build
-```
-
-### Common Error Solutions
-
-1. **Maven Build Failures**
-```bash
-# Clear Maven cache
-docker-compose run --rm java8-dev rm -rf ~/.m2/repository
-```
-
-2. **Port Conflicts**
-```bash
-# Check port usage
-netstat -ano | findstr "8080"
-netstat -ano | findstr "5005"
-```
-
-3. **Container Resource Issues**
-```bash
-# Monitor resource usage
-docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
-```
-
-4. **Permission Problems**
-```bash
-# Fix volume permissions
-docker-compose run --rm java8-dev chown -R $(id -u):$(id -g) /app
-```
-
-### Best Practices
-
-1. **Development Workflow**
-   - Use development profile for coding
-   - Use production profile for deployment
-   - Use test profile for continuous integration
-
-2. **Resource Management**
-   - Monitor container resources
-   - Use volume mounts efficiently
-   - Clean up unused resources regularly
-
-3. **Security**
-   - Use non-root users in production
-   - Scan images for vulnerabilities
-   - Keep base images updated
-
-4. **Performance**
-   - Use multi-stage builds
-   - Optimize layer caching
-   - Implement proper resource limits
-
-## Running with Docker
-
-If you don't have Java installed locally, you can use Docker to run and test the application. This project includes Docker configurations for all three Java versions (8, 11, and 17).
-
-### Prerequisites
-- Docker installed on your system
-- Docker Compose (usually included with Docker Desktop)
-
-### Quick Start with Docker
-
-1. Clone the repository:
-```bash
-git clone https://github.com/sankarpadhy/JAVA8-11-17NewFeatures.git
-cd JAVA8-11-17NewFeatures
-```
-
-2. Build and run all modules using Docker Compose:
-```bash
-docker-compose up --build
-```
-
-This will:
-- Create containers for Java 8, 11, and 17
-- Build the project using Maven
-- Run all tests
-- Display the test results
-
-### Running Specific Java Versions
-
-To run a specific Java version:
-
-#### Java 8 Features
-```bash
-docker-compose run java8
-```
-
-#### Java 11 Features
-```bash
-docker-compose run java11
-```
-
-#### Java 17 Features
-```bash
-docker-compose run java17
-```
-
-### Running Tests in Docker
-
-To run tests for a specific module:
-
-```bash
-# Java 8 Tests
-docker-compose run java8 mvn test -pl java8-features
-
-# Java 11 Tests
-docker-compose run java11 mvn test -pl java11-features
-
-# Java 17 Tests
-docker-compose run java17 mvn test -pl java17-features
-```
-
-### Interactive Development
-
-For interactive development using Docker:
-
-1. Start a container with mounted source code:
-```bash
-docker-compose run --service-ports java17 /bin/bash
-```
-
-2. Inside the container, you can:
-```bash
-# Build the project
-mvn clean install
-
-# Run specific tests
-mvn test -pl java8-features -Dtest=LambdaExamplesTest
-
-# Run specific classes
-mvn exec:java -pl java8-features -Dexec.mainClass="com.java.features.java8.lambda.LambdaExamples"
-```
-
-### Docker Container Features
-
-Each Docker container includes:
-- OpenJDK (version 8, 11, or 17)
-- Maven 3.8+
-- Git
-- Basic development tools
-
-### Troubleshooting Docker Setup
-
-1. **Container Build Issues**
+### Key Features Explained
+
+1. **Development Profiles**
+   ```yaml
+   profiles: ["dev"]
+   ```
+   - Allows selective service startup
+   - Start specific environments: `docker compose --profile dev up java8-dev`
+   - Useful for running multiple Java versions
+
+2. **Volume Mounting**
+   ```yaml
+   volumes:
+     - .:/app                 # Source code mounting
+     - maven-repo:/root/.m2   # Maven repository
+   ```
+   - `.:/app`: Mounts current directory to /app in container
+   - `maven-repo:/root/.m2`: Shares Maven dependencies across containers
+   - Changes to source code are immediately reflected
+
+3. **Maven Repository Caching**
+   ```yaml
+   volumes:
+     maven-repo:  # Named volume definition
+   ```
+   - Persists downloaded dependencies
+   - Speeds up subsequent builds
+   - Shared across all Java version containers
+
+4. **Debug Port Mapping**
+   ```yaml
+   ports:
+     - "5005:5005"  # Host:Container
+   ```
+   - Enables remote debugging
+   - Different port for each Java version
+   - Format: "HOST_PORT:CONTAINER_PORT"
+
+5. **Environment Variables**
+   ```yaml
+   environment:
+     - MAVEN_OPTS=-Xmx512m
+     - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+   ```
+   - Configure JVM settings
+   - Set build tool options
+   - Enable debugging features
+
+### Docker Networking and Container Communication
+
+1. **Port Mapping**
+   ```yaml
+   ports:
+     - "8080:8080"  # App port
+     - "5005:5005"  # Debug port
+   ```
+   - Format: "HOST_PORT:CONTAINER_PORT"
+   - `8080:8080`: Maps container's app port to host
+   - `5005:5005`: Maps container's debug port to host
+   - Different host ports for each Java version to avoid conflicts
+
+2. **Container Networks**
+   - Docker Compose creates a default network
+   - All services can communicate with each other
+   - Each container gets a DNS name matching its service name
+
+3. **Service Discovery**
+   ```yaml
+   services:
+     java8-dev:
+       hostname: java8-dev
+     java9-dev:
+       hostname: java9-dev
+   ```
+   - Containers can reference each other by service name
+   - Automatic DNS resolution within the network
+   - Useful for microservices architecture
+
+4. **Network Isolation**
+   ```yaml
+   networks:
+     java-dev-net:
+       driver: bridge
+   ```
+   - Creates isolated network for services
+   - Improves security
+   - Controls container communication
+
+### Advanced Docker Features
+
+1. **Health Checks**
+   ```yaml
+   services:
+     java8-dev:
+       healthcheck:
+         test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+         interval: 30s
+         timeout: 10s
+         retries: 3
+   ```
+   - Monitors container health
+   - Automatically restarts unhealthy containers
+   - Useful for production environments
+
+2. **Resource Limits**
+   ```yaml
+   services:
+     java8-dev:
+       deploy:
+         resources:
+           limits:
+             cpus: '2'
+             memory: 2G
+           reservations:
+             cpus: '1'
+             memory: 1G
+   ```
+   - Controls container resource usage
+   - Prevents resource exhaustion
+   - Important for multi-container setups
+
+3. **Dependency Management**
+   ```yaml
+   services:
+     java8-dev:
+       depends_on:
+         - database
+   ```
+   - Defines service startup order
+   - Ensures dependencies are ready
+   - Manages complex application stacks
+
+### Development Tips
+
+1. **Using Docker Compose Profiles**
    ```bash
-   # Remove all containers and images
-   docker-compose down --rmi all
-   # Rebuild from scratch
-   docker-compose up --build
+   # Start all development environments
+   docker compose --profile dev up
+
+   # Start specific Java version
+   docker compose --profile dev up java8-dev
+
+   # Run tests in all environments
+   docker compose --profile test up
    ```
 
-2. **Permission Issues**
+2. **Debugging in Container**
    ```bash
-   # If you encounter permission issues on Linux/Mac
-   sudo chown -R $USER:$USER .
+   # View container logs
+   docker compose logs -f java8-dev
+
+   # Execute command in running container
+   docker compose exec java8-dev mvn test
+
+   # Open shell in container
+   docker compose exec java8-dev /bin/bash
    ```
+
+3. **Volume Management**
+   ```bash
+   # List volumes
+   docker volume ls
+
+   # Clean up unused volumes
+   docker volume prune
+
+   # Inspect volume
+   docker volume inspect maven-repo
+   ```
+
+### Common Issues and Solutions
+
+1. **Port Conflicts**
+   - Error: "port is already allocated"
+   - Solution: Change host port mapping
+   - Check running containers: `docker ps`
+
+2. **Volume Permissions**
+   - Issue: Cannot write to mounted volumes
+   - Solution: Check file permissions
+   - Use `chown` in Dockerfile if needed
 
 3. **Memory Issues**
-   - Increase Docker memory limit in Docker Desktop settings
-   - Default memory allocation might not be sufficient for running all tests
+   - Problem: Container crashes with OOM
+   - Solution: Increase memory limits
+   - Monitor with `docker stats`
 
-4. **Port Conflicts**
-   - The containers use ports 8080-8082
-   - Ensure these ports are available or modify docker-compose.yml
+### Security Best Practices
+
+1. **Container Security**
+   - Use official base images
+   - Keep images updated
+   - Scan for vulnerabilities
+
+2. **Network Security**
+   - Limit exposed ports
+   - Use network isolation
+   - Implement proper firewalls
+
+3. **Data Security**
+   - Protect sensitive data in volumes
+   - Use secrets management
+   - Regular security audits
+
+## Running the Project
+
+### Development Mode
+
+Start a specific Java version environment:
+```bash
+# For Java 8 features
+docker compose --profile dev up --build java8-dev
+
+# For Java 9 features
+docker compose --profile dev up --build java9-dev
+
+# For Java 11 features
+docker compose --profile dev up --build java11-dev
+
+# For Java 17 features
+docker compose --profile dev up --build java17-dev
+```
+
+### Build All Modules
+```bash
+docker compose --profile dev up --build java8-dev java9-dev java11-dev java17-dev
+```
+
+## Testing
+
+Each module contains unit tests demonstrating the features:
+- Tests are run using JUnit 5
+- Surefire plugin configured for each Java version
+- Preview features enabled where needed
+
+## Testing Configuration
+
+### Maven Surefire Plugin
+
+1. **Basic Configuration**
+   ```xml
+   <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-surefire-plugin</artifactId>
+       <version>3.1.2</version>
+       <configuration>
+           <!-- Disable forking to avoid JVM startup overhead -->
+           <forkCount>0</forkCount>
+           <!-- Run tests in current JVM -->
+           <reuseForks>false</reuseForks>
+           <!-- Disable parallel execution for stability -->
+           <parallel>none</parallel>
+           <!-- Configure JVM arguments for tests -->
+           <argLine>
+               --enable-preview
+               -XX:+ShowCodeDetailsInExceptionMessages
+           </argLine>
+       </configuration>
+   </plugin>
+   ```
+
+2. **Version-Specific Configurations**
+   ```xml
+   <!-- Java 8 Configuration -->
+   <profile>
+       <id>java8</id>
+       <build>
+           <plugins>
+               <plugin>
+                   <artifactId>maven-surefire-plugin</artifactId>
+                   <configuration>
+                       <!-- Java 8 specific settings -->
+                       <argLine>-Xmx512m</argLine>
+                   </configuration>
+               </plugin>
+           </plugins>
+       </build>
+   </profile>
+
+   <!-- Java 17 Configuration -->
+   <profile>
+       <id>java17</id>
+       <build>
+           <plugins>
+               <plugin>
+                   <artifactId>maven-surefire-plugin</artifactId>
+                   <configuration>
+                       <!-- Enable preview features -->
+                       <argLine>
+                           --enable-preview
+                           --add-opens java.base/java.lang=ALL-UNNAMED
+                       </argLine>
+                   </configuration>
+               </plugin>
+           </plugins>
+       </build>
+   </profile>
+   ```
+
+### JUnit 5 Integration
+
+1. **Dependencies**
+   ```xml
+   <dependencies>
+       <!-- JUnit Jupiter API -->
+       <dependency>
+           <groupId>org.junit.jupiter</groupId>
+           <artifactId>junit-jupiter-api</artifactId>
+           <version>5.9.2</version>
+           <scope>test</scope>
+       </dependency>
+       <!-- JUnit Jupiter Engine -->
+       <dependency>
+           <groupId>org.junit.jupiter</groupId>
+           <artifactId>junit-jupiter-engine</artifactId>
+           <version>5.9.2</version>
+           <scope>test</scope>
+       </dependency>
+       <!-- JUnit Jupiter Params -->
+       <dependency>
+           <groupId>org.junit.jupiter</groupId>
+           <artifactId>junit-jupiter-params</artifactId>
+           <version>5.9.2</version>
+           <scope>test</scope>
+       </dependency>
+   </dependencies>
+   ```
+
+2. **Test Examples**
+   ```java
+   // Basic Test
+   @Test
+   void testBasicFeature() {
+       // Test implementation
+   }
+
+   // Parameterized Test
+   @ParameterizedTest
+   @ValueSource(strings = {"value1", "value2"})
+   void testWithParameters(String value) {
+       // Test with parameters
+   }
+
+   // Conditional Test (Version Specific)
+   @Test
+   @EnabledOnJre(JRE.JAVA_17)
+   void testJava17Feature() {
+       // Java 17 specific test
+   }
+   ```
+
+### Preview Features
+
+1. **Enabling Preview Features**
+   ```xml
+   <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-compiler-plugin</artifactId>
+       <configuration>
+           <compilerArgs>
+               <!-- Enable preview features -->
+               <arg>--enable-preview</arg>
+               <!-- Show preview feature warnings -->
+               <arg>-Xlint:preview</arg>
+           </compilerArgs>
+       </configuration>
+   </plugin>
+   ```
+
+2. **Version-Specific Preview Features**
+   - Java 14: Records (Preview)
+   - Java 15: Sealed Classes (Preview)
+   - Java 16: Pattern Matching (Preview)
+   - Java 17: Pattern Matching for switch (Preview)
+
+### Test Execution
+
+1. **Running Tests**
+   ```bash
+   # Run all tests
+   mvn test
+
+   # Run specific test class
+   mvn test -Dtest=MyTestClass
+
+   # Run with specific profile
+   mvn test -P java8
+
+   # Skip tests
+   mvn install -DskipTests
+   ```
+
+2. **Test Categories**
+   ```java
+   // Tag for unit tests
+   @Tag("unit")
+   class UnitTest {
+       // Unit test implementation
+   }
+
+   // Tag for integration tests
+   @Tag("integration")
+   class IntegrationTest {
+       // Integration test implementation
+   }
+   ```
+
+3. **Running Specific Test Categories**
+   ```xml
+   <configuration>
+       <groups>unit</groups>
+       <excludedGroups>integration</excludedGroups>
+   </configuration>
+   ```
+
+### Test Reports
+
+1. **Surefire Reports**
+   - Location: `target/surefire-reports`
+   - Format: XML and plain text
+   - Contains test execution details
+   - Includes failure information
+
+2. **Coverage Reports with JaCoCo**
+   ```xml
+   <plugin>
+       <groupId>org.jacoco</groupId>
+       <artifactId>jacoco-maven-plugin</artifactId>
+       <version>0.8.8</version>
+       <executions>
+           <execution>
+               <id>prepare-agent</id>
+               <goals>
+                   <goal>prepare-agent</goal>
+               </goals>
+           </execution>
+           <execution>
+               <id>report</id>
+               <phase>test</phase>
+               <goals>
+                   <goal>report</goal>
+               </goals>
+           </execution>
+       </executions>
+   </plugin>
+   ```
+
+   **Report Locations:**
+   - HTML Report: `target/site/jacoco/index.html`
+   - XML Report: `target/site/jacoco/jacoco.xml`
+   - CSV Report: `target/site/jacoco/jacoco.csv`
+
+   **Report Contents:**
+   - Line Coverage
+   - Branch Coverage
+   - Complexity Metrics
+   - Method Coverage
+   - Class Coverage
+
+   **Viewing Reports:**
+   ```bash
+   # Generate coverage report
+   mvn clean test jacoco:report
+
+   # Open HTML report in browser (Windows)
+   start target/site/jacoco/index.html
+   ```
+
+   **Coverage Enforcement:**
+   ```xml
+   <execution>
+       <id>check</id>
+       <goals>
+           <goal>check</goal>
+       </goals>
+       <configuration>
+           <rules>
+               <rule>
+                   <element>PACKAGE</element>
+                   <limits>
+                       <limit>
+                           <counter>LINE</counter>
+                           <value>COVEREDRATIO</value>
+                           <minimum>0.80</minimum>
+                       </limit>
+                   </limits>
+               </rule>
+           </rules>
+       </configuration>
+   </execution>
+   ```
+
+3. **Aggregate Reports**
+   ```xml
+   <execution>
+       <id>report-aggregate</id>
+       <phase>verify</phase>
+       <goals>
+           <goal>report-aggregate</goal>
+       </goals>
+       <configuration>
+           <dataFileIncludes>
+               <dataFileInclude>**/jacoco.exec</dataFileInclude>
+           </dataFileIncludes>
+           <outputDirectory>target/site/jacoco-aggregate</outputDirectory>
+       </configuration>
+   </execution>
+   ```
+   - Location: `target/site/jacoco-aggregate/index.html`
+   - Combines coverage from all modules
+   - Useful for multi-module projects
+
+4. **Coverage Badges**
+   ```xml
+   <plugin>
+       <groupId>com.github.terma</groupId>
+       <artifactId>gradle-badges</artifactId>
+       <version>1.2.1</version>
+       <configuration>
+           <subject>coverage</subject>
+           <status>${jacoco.coverage.percentage}%</status>
+           <color>green</color>
+           <path>target/coverage-badge.svg</path>
+       </configuration>
+   </plugin>
+   ```
+   - Creates coverage badge for README
+   - Updates automatically with builds
+   - Location: `target/coverage-badge.svg`
+
+5. **IDE Integration**
+   - IntelliJ IDEA: Coverage tab in Run window
+   - Eclipse: EclEmma plugin
+   - VSCode: Coverage Gutters extension
+
+6. **Continuous Integration**
+   ```yaml
+   # GitHub Actions example
+   - name: Generate Coverage Report
+     run: mvn clean verify
+   
+   - name: Upload Coverage Report
+     uses: actions/upload-artifact@v2
+     with:
+       name: coverage-report
+       path: target/site/jacoco
+   ```
+   - Automated coverage reporting
+   - Historical trend analysis
+   - Pull request coverage checks
 
 ### Best Practices
 
-1. **Resource Management**
-   - Stop containers when not in use: `docker-compose down`
-   - Remove unused images: `docker system prune`
+1. **Test Organization**
+   - Group related tests in test classes
+   - Use meaningful test names
+   - Follow naming conventions
+   - Separate unit and integration tests
 
-2. **Development Workflow**
-   - Use volume mounts for real-time code changes
-   - Run tests in containers for consistent environments
-   - Use Docker logs for debugging
+2. **Test Isolation**
+   - Each test should be independent
+   - Clean up test resources
+   - Use `@BeforeEach` and `@AfterEach`
+   - Avoid test interdependencies
 
-3. **Performance Tips**
-   - Build images in advance for faster startup
-   - Use Docker layer caching effectively
-   - Consider using multi-stage builds for production
+3. **Performance**
+   - Minimize test execution time
+   - Use appropriate test scopes
+   - Configure parallel execution when safe
+   - Profile test execution time
 
-## Testing
-Run all tests:
-```bash
-mvn test
-```
+4. **Maintenance**
+   - Keep tests up to date
+   - Remove obsolete tests
+   - Document test requirements
+   - Version control test data
 
-Run specific module tests:
-```bash
-mvn test -pl java8-features
-mvn test -pl java11-features
-mvn test -pl java17-features
-```
+### Troubleshooting
 
-## Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+1. **Common Issues**
+   - Test execution timeout
+   - Memory constraints
+   - Version compatibility
+   - Resource conflicts
 
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+2. **Solutions**
+   - Adjust timeout settings
+   - Configure memory settings
+   - Check Java version compatibility
+   - Clean test resources
+
+3. **Debugging**
+   ```xml
+   <configuration>
+       <debugger>true</debugger>
+       <debugPort>5005</debugPort>
+   </configuration>
+   ```

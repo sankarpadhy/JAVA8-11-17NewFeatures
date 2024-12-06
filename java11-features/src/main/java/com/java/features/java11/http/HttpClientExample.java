@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Demonstrates the new HTTP Client API in Java 11
@@ -73,7 +74,7 @@ public class HttpClientExample {
     public List<String> sendParallelRequests(List<String> urls) {
         List<CompletableFuture<String>> futures = urls.stream()
                 .map(this::sendAsynchronousGet)
-                .toList();
+                .collect(Collectors.toList());
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .join();

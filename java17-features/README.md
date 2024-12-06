@@ -184,6 +184,83 @@ String json = """
     """;
 ```
 
+### Advanced Text Block Examples
+```java
+// HTML Template with Styling
+String html = """
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <title>%s</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 20px;
+                }
+                .content {
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="content">
+                %s
+            </div>
+        </body>
+    </html>
+    """.formatted(title, content);
+
+// Complex SQL Query
+String sql = """
+    SELECT u.id, u.name, u.email,
+           COUNT(o.id) as order_count,
+           SUM(o.total_amount) as total_spent
+    FROM %s u
+    LEFT JOIN orders o ON u.id = o.user_id
+    WHERE u.status = 'ACTIVE'
+      AND o.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
+    GROUP BY u.id, u.name, u.email
+    HAVING order_count > 0
+    ORDER BY total_spent DESC
+    LIMIT %d
+    """.formatted(tableName, limit);
+```
+
+## 5. Enhanced Switch Expressions
+
+### Advanced Pattern Matching Examples
+```java
+// Pattern matching with type patterns and guards
+public static String formatValue(Object obj) {
+    return switch (obj) {
+        case null -> "null";
+        case String s -> "String: " + s.toLowerCase();
+        case Integer i -> "Integer: " + (i * 2);
+        case Long l -> "Long: " + (l + 1);
+        case Double d -> "Double: " + String.format("%.2f", d);
+        case Number n -> "Number: " + n.toString();
+        case int[] arr -> "Int Array of length: " + arr.length;
+        default -> "Unknown type: " + obj.getClass().getSimpleName();
+    };
+}
+
+// Pattern matching with guards and multiple conditions
+public static String classifyNumber(Number number) {
+    return switch (number) {
+        case null -> "Invalid number: null";
+        case Integer i && i < 0 -> "Negative integer: " + i;
+        case Integer i && i == 0 -> "Zero";
+        case Integer i && i > 0 -> "Positive integer: " + i;
+        case Double d && d.isNaN() -> "Not a number";
+        case Double d && d.isInfinite() -> "Infinite";
+        case Double d && d < 0 -> "Negative double: " + String.format("%.2f", d);
+        case Double d -> "Positive double: " + String.format("%.2f", d);
+        default -> "Other number type: " + number.getClass().getSimpleName();
+    };
+}
+```
+
 ## Common Issues and Solutions
 
 ### Sealed Classes Issues

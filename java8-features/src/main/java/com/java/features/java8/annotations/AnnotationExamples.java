@@ -43,25 +43,26 @@ public class AnnotationExamples {
 
     // Type Annotations examples
 
-    // Type annotation for class type parameter
-    public static class Container<@Nonnull T> {
-        private T value;
+    // Generic class with nullable type parameter
+    public static class Container<T> {
+        private final T value;
 
-        public Container(T value) {
+        public Container(@Nonnull T value) {
             this.value = value;
         }
 
+        @Nonnull
         public T getValue() {
             return value;
         }
     }
 
-    // Type annotation on method type parameter
-    public static <@Nonnull T> void processValue(T value) {
+    // Generic method with nullable parameter
+    public static <T> void processValue(@Nonnull T value) {
         System.out.println("Processing value: " + value);
     }
 
-    // Type annotation on constructor
+    // Constructor with nullable parameter
     public static class SafeObject {
         private final String value;
 
@@ -70,42 +71,51 @@ public class AnnotationExamples {
         }
     }
 
-    // Type annotation on type cast
+    // Method with nullable return type
+    @Nonnull
     public static String convertObject(Object obj) {
-        return (@Nonnull String) obj;
+        return (String) obj;
     }
 
-    // Type annotation on implements clause
-    public static class NumberList implements @Nonnull List<@Nonnull Number> {
-        // Implementation details omitted for brevity
-        // This is just to demonstrate type annotation usage
+    // Simple list implementation
+    public static class NumberList {
+        private final List<Number> numbers = Arrays.asList();
+        
+        public void add(Number n) {
+            numbers.add(n);
+        }
+        
+        public Number get(int index) {
+            return numbers.get(index);
+        }
     }
 
-    // Type annotation on throws clause
-    public static void riskyOperation() throws @Nonnull Exception {
+    // Method with throws clause
+    public static void riskyOperation() throws Exception {
         throw new Exception("Operation failed");
     }
 
-    // Type annotation on array type
-    public static @Nonnull String @Nonnull [] createArray() {
+    // Array creation with nonnull elements
+    @Nonnull
+    public static String[] createArray() {
         return new String[]{"Hello", "World"};
     }
 
-    // Type annotation on receiver parameter
-    public void receiverExample(@Nonnull AnnotationExamples this) {
+    // Method with nonnull parameter
+    public void receiverExample() {
         System.out.println("Method with annotated receiver parameter");
     }
 
-    // Type annotation on wildcard bound
-    public static void processList(List<? extends @Nonnull Number> numbers) {
+    // Method with generic parameter
+    public static void processList(@Nonnull List<? extends Number> numbers) {
         numbers.forEach(System.out::println);
     }
 
-    // Combining type annotations with generics
-    public static class TypeAnnotatedContainer<@Nonnull T extends @Nonnull Object> {
-        private final List<@Nonnull T> elements;
+    // Container with nullable elements
+    public static class TypeAnnotatedContainer<T> {
+        private final List<T> elements;
 
-        public TypeAnnotatedContainer(List<@Nonnull T> elements) {
+        public TypeAnnotatedContainer(@Nonnull List<T> elements) {
             this.elements = elements;
         }
 
@@ -115,7 +125,8 @@ public class AnnotationExamples {
             }
         }
 
-        public @Nonnull List<@Nonnull T> getElements() {
+        @Nonnull
+        public List<T> getElements() {
             return elements;
         }
     }

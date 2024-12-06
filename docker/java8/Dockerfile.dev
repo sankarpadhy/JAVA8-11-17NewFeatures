@@ -13,17 +13,25 @@ RUN apt-get update && apt-get install -y \
 ENV MAVEN_CONFIG=/root/.m2
 WORKDIR /app
 
+# Add Maven to PATH
+ENV M2_HOME=/usr/share/maven
+ENV PATH=${M2_HOME}/bin:${PATH}
+
+# Set JAVA_TOOL_OPTIONS for remote debugging
+ENV JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
+
 # Copy only pom files first for better caching
 COPY ./pom.xml /app/
 COPY ./java8-features/pom.xml /app/java8-features/
-COPY ./java11-features/pom.xml /app/java11-features/
-COPY ./java17-features/pom.xml /app/java17-features/
 
-# Download dependencies
-RUN mvn dependency:go-offline -B
+# Download dependencies for java8-features only
+RUN mvn dependency:go-offline -B -P java8
 
 # Add source code volume mount point
 VOLUME ["/app/src"]
 
-# Default command for development
-CMD ["mvn", "clean", "test", "-pl", "java8-features"]
+# Expose debug port
+EXPOSE 5005
+
+# Default command to build only java8-features module
+CMD ["mvn", "clean", "install", "-P", "java8"]

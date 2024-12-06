@@ -54,8 +54,13 @@ public class Base64Examples {
      */
     public static String encodeFile(String filePath) throws IOException {
         try (InputStream is = new FileInputStream(filePath)) {
-            byte[] bytes = is.readAllBytes();
-            return Base64.getEncoder().encodeToString(bytes);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] data = new byte[1024];
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            return Base64.getEncoder().encodeToString(buffer.toByteArray());
         }
     }
 
@@ -74,7 +79,11 @@ public class Base64Examples {
      */
     public static void encodeStream(InputStream input, OutputStream output) throws IOException {
         try (OutputStream encodedStream = Base64.getEncoder().wrap(output)) {
-            input.transferTo(encodedStream);
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = input.read(buffer)) != -1) {
+                encodedStream.write(buffer, 0, bytesRead);
+            }
         }
     }
 

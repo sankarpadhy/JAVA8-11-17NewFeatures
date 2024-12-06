@@ -8,7 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.HashMap;
 
 @DisplayName("Lambda Expressions Real-World Examples")
 class LambdaExamplesTest {
@@ -26,8 +29,8 @@ class LambdaExamplesTest {
         );
 
         // Business rules as predicates
-        Predicate<Order> isPending = order -> "PENDING".equals(order.status());
-        Predicate<Order> isLargeOrder = order -> order.amount() > 100.0;
+        Predicate<Order> isPending = order -> "PENDING".equals(order.getStatus());
+        Predicate<Order> isLargeOrder = order -> order.getAmount() > 100.0;
 
         // Processing pipeline
         List<Order> processableOrders = orders.stream()
@@ -35,7 +38,7 @@ class LambdaExamplesTest {
             .collect(Collectors.toList());
 
         assertEquals(2, processableOrders.size());
-        assertTrue(processableOrders.stream().allMatch(o -> o.amount() > 100.0));
+        assertTrue(processableOrders.stream().allMatch(o -> o.getAmount() > 100.0));
     }
 
     // Real-world use case: Document processing system
@@ -99,20 +102,76 @@ class LambdaExamplesTest {
         });
 
         // Simulate events
-        Event loginEvent = new Event("LOGIN", Map.of("userId", "12345"));
-        Event purchaseEvent = new Event("PURCHASE", Map.of(
-            "amount", "99.99",
-            "productId", "PRD-001"
-        ));
+        Map<String, String> loginData = new HashMap<>();
+        loginData.put("userId", "12345");
+        Event loginEvent = new Event("LOGIN", loginData);
+
+        Map<String, String> purchaseData = new HashMap<>();
+        purchaseData.put("amount", "99.99");
+        purchaseData.put("productId", "PRD-001");
+        Event purchaseEvent = new Event("PURCHASE", purchaseData);
 
         eventSystem.processEvent(loginEvent);
         eventSystem.processEvent(purchaseEvent);
     }
 
     // Supporting classes
-    record Order(Long id, Double amount, String status) {}
-    record Transaction(String type, Double amount) {
+    static class Event {
+        private final String type;
+        private final Map<String, String> data;
+
+        public Event(String type, Map<String, String> data) {
+            this.type = type;
+            this.data = data;
+        }
+
+        public String getType() { return type; }
+        public Map<String, String> getData() { return data; }
+    }
+
+    static class Order {
+        private final Long id;
+        private final Double amount;
+        private final String status;
+
+        public Order(Long id, Double amount, String status) {
+            this.id = id;
+            this.amount = amount;
+            this.status = status;
+        }
+
+        public Long getId() { return id; }
+        public Double getAmount() { return amount; }
+        public String getStatus() { return status; }
+    }
+
+    static class Transaction {
+        private final String type;
+        private final Double amount;
+
+        public Transaction(String type, Double amount) {
+            this.type = type;
+            this.amount = amount;
+        }
+
         public String getType() { return type; }
         public Double getAmount() { return amount; }
+    }
+
+    static class EventSystem {
+        private final Map<String, Consumer<Event>> handlers = new HashMap<>();
+
+        public void registerHandler(String eventType, Consumer<Event> handler) {
+            handlers.put(eventType, handler);
+        }
+
+        public void processEvent(Event event) {
+            Consumer<Event> handler = handlers.get(event.getType());
+            if (handler != null) {
+                handler.accept(event);
+            } else {
+                throw new IllegalArgumentException("No handler registered for event type: " + event.getType());
+            }
+        }
     }
 }

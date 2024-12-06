@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Development Services
   java8-dev:
@@ -15,6 +13,20 @@ services:
     ports:
       - "8080:8080"
       - "5005:5005"  # Debug port
+
+  java9-dev:
+    build:
+      context: .
+      dockerfile: docker/java9/Dockerfile.dev
+    profiles: ["dev", "test"]
+    volumes:
+      - .:/app
+      - maven-repo:/root/.m2
+    environment:
+      - MAVEN_OPTS=-Xmx512m
+    ports:
+      - "8090:8080"
+      - "5009:5005"  # Debug port
 
   java11-dev:
     build:
@@ -54,6 +66,24 @@ services:
       - JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
     ports:
       - "8080:8080"
+
+  java9:
+    build:
+      context: .
+      dockerfile: docker/java9/Dockerfile
+    volumes:
+      - .:/app
+      - maven-repo:/root/.m2
+
+  java9-prod:
+    build:
+      context: .
+      dockerfile: docker/java9/Dockerfile.prod
+    profiles: ["prod"]
+    environment:
+      - JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    ports:
+      - "8090:8080"
 
   java11-prod:
     build:
@@ -107,3 +137,8 @@ services:
 
 volumes:
   maven-repo:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: C:\Users\sanka\.m2

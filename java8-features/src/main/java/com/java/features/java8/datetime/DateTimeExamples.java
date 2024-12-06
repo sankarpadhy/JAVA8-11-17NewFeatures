@@ -59,6 +59,9 @@ public class DateTimeExamples {
      */
     public static String getTimeInZone(String zoneName) {
         ZonedDateTime zonedTime = ZonedDateTime.now(ZoneId.of(zoneName));
+        if ("UTC".equals(zoneName)) {
+            return zonedTime.toInstant().toString(); // This will use ISO_INSTANT format which ends with Z for UTC
+        }
         return zonedTime.format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
     }
 

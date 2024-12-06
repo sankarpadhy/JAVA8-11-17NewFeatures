@@ -1,0 +1,17 @@
+FROM openjdk:9-jdk-slim
+
+WORKDIR /app
+
+# Copy the project files
+COPY ./pom.xml /app/
+COPY ./java8-features/pom.xml /app/java8-features/
+COPY ./java9-features/pom.xml /app/java9-features/
+COPY ./java11-features/pom.xml /app/java11-features/
+COPY ./java17-features/pom.xml /app/java17-features/
+COPY ./java9-features/src /app/java9-features/src/
+
+# Build the project
+RUN mvn clean package -pl java9-features -am -DskipTests
+
+# Run the application
+CMD ["java", "-jar", "java9-features/target/java9-features-1.0-SNAPSHOT.jar"]

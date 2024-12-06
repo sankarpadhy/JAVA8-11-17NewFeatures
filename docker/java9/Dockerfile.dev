@@ -1,0 +1,44 @@
+FROM openjdk:9-jdk
+
+# Update sources to use stable Debian repository
+RUN sed -i 's/sid/bullseye/g' /etc/apt/sources.list
+# Add the missing GPG keys
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0E98404D386FA1D9 6ED0E7B82643E131 605C66F00D6C9793
+# Install development tools
+RUN apt-get update && apt-get install -y \
+    git \
+    vim \
+    curl \
+    wget \
+    maven \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set up development environment
+ENV MAVEN_CONFIG=/root/.m2
+WORKDIR /app
+
+# Add Maven to PATH
+ENV M2_HOME=/usr/share/maven
+ENV PATH=${M2_HOME}/bin:${PATH}
+
+# Set Java 9 specific environment variables
+ENV JAVA_TOOL_OPTIONS="--add-modules=jdk.incubator.httpclient \
+    --add-exports=java.base/sun.nio.ch=ALL-UNNAMED \
+    --add-exports=jdk.incubator.httpclient/jdk.incubator.http=ALL-UNNAMED \
+    -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+
+# Copy only pom files first for better caching
+COPY ./pom.xml /app/
+COPY ./java9-features/pom.xml /app/java9-features/
+
+# Download dependencies for java9-features only
+RUN mvn dependency:go-offline -B -P java9
+
+# Add source code volume mount point
+VOLUME ["/app/src"]
+
+# Expose debug port
+EXPOSE 5005
+
+# Default command to build only java9-features module and keep container running
+CMD mvn clean install -P java9 && tail -f /dev/null

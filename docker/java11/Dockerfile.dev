@@ -1,0 +1,37 @@
+FROM openjdk:11-jdk
+
+# Install development tools
+RUN apt-get update && apt-get install -y \
+    git \
+    vim \
+    curl \
+    wget \
+    maven \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set up development environment
+ENV MAVEN_CONFIG=/root/.m2
+WORKDIR /app
+
+# Add Maven to PATH
+ENV M2_HOME=/usr/share/maven
+ENV PATH=${M2_HOME}/bin:${PATH}
+
+# Set JAVA_TOOL_OPTIONS for remote debugging
+ENV JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+
+# Copy only pom files first for better caching
+COPY ./pom.xml /app/
+COPY ./java11-features/pom.xml /app/java11-features/
+
+# Download dependencies for java11-features only
+RUN mvn dependency:go-offline -B -P java11
+
+# Add source code volume mount point
+VOLUME ["/app/src"]
+
+# Expose debug port
+EXPOSE 5005
+
+# Default command to build only java11-features module
+CMD ["mvn", "clean", "install", "-P", "java11"]

@@ -1,6 +1,5 @@
 package com.java.features.java8.lambda;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -14,6 +13,7 @@ public class LambdaBasics {
 
     /**
      * Demonstrates a simple Predicate usage
+     * 
      * @param number Number to test
      * @return true if number is positive
      */
@@ -24,6 +24,7 @@ public class LambdaBasics {
 
     /**
      * Demonstrates Function interface usage
+     * 
      * @param str Input string
      * @return Length of the string
      */
@@ -34,6 +35,7 @@ public class LambdaBasics {
 
     /**
      * Demonstrates Consumer interface usage
+     * 
      * @param list List to process
      */
     public static void processElements(List<String> list) {
@@ -43,6 +45,7 @@ public class LambdaBasics {
 
     /**
      * Demonstrates Supplier interface usage
+     * 
      * @return Random number between 1 and 100
      */
     public static Integer getRandomNumber() {
@@ -52,6 +55,7 @@ public class LambdaBasics {
 
     /**
      * Demonstrates chaining of predicates
+     * 
      * @param number Number to test
      * @return true if number is positive and even
      */
@@ -63,6 +67,7 @@ public class LambdaBasics {
 
     /**
      * Example of method reference usage
+     * 
      * @param strings List of strings to sort
      * @return Sorted list
      */

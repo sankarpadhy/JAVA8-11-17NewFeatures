@@ -9,18 +9,39 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>java8-features</module>
-        <module>java11-features</module>
-        <module>java17-features</module>
-    </modules>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
         <junit.jupiter.version>5.9.2</junit.jupiter.version>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>java8</id>
+            <modules>
+                <module>java8-features</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java9</id>
+            <modules>
+                <module>java9-features</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java11</id>
+            <modules>
+                <module>java11-features</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java17</id>
+            <modules>
+                <module>java17-features</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>

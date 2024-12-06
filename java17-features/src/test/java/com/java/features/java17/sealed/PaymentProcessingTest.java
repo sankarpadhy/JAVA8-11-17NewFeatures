@@ -90,23 +90,24 @@ class PaymentProcessingTest {
     class PaymentProcessor {
         public PaymentResult processPayment(Payment payment) {
             return switch (payment) {
-                case CreditCardPayment cc when cc.getAmount() > 10000 ->
-                    new PaymentResult(false, "Amount exceeds credit card limit");
-                    
-                case CreditCardPayment cc ->
-                    processCreditCard(cc);
-                    
-                case PayPalPayment pp when !isValidEmail(pp.getPaypalEmail()) ->
-                    new PaymentResult(false, "Invalid PayPal email");
-                    
-                case PayPalPayment pp ->
-                    processPayPal(pp);
-                    
-                case CryptoPayment cp when !isSupportedCrypto(cp.getCryptoCurrency()) ->
-                    new PaymentResult(false, "Unsupported cryptocurrency");
-                    
-                case CryptoPayment cp ->
-                    processCrypto(cp);
+                case CreditCardPayment cc -> {
+                    if (cc.getAmount() > 10000) {
+                        yield new PaymentResult(false, "Amount exceeds credit card limit");
+                    }
+                    yield processCreditCard(cc);
+                }
+                case PayPalPayment pp -> {
+                    if (!isValidEmail(pp.getPaypalEmail())) {
+                        yield new PaymentResult(false, "Invalid PayPal email");
+                    }
+                    yield processPayPal(pp);
+                }
+                case CryptoPayment cp -> {
+                    if (!isSupportedCrypto(cp.getCryptoCurrency())) {
+                        yield new PaymentResult(false, "Unsupported cryptocurrency");
+                    }
+                    yield processCrypto(cp);
+                }
             };
         }
 
@@ -252,4 +253,70 @@ class PaymentProcessingTest {
                      LocalDateTime timestamp,
                      String details,
                      double amount) {}
+
+    class PaymentValidator {
+        public ValidationResult validatePayment(Object payment) {
+            if (payment instanceof Payment p) {
+                return switch (p) {
+                    case CreditCardPayment cc && cc.getAmount() <= 0 ->
+                        new ValidationResult(false, "Invalid amount for credit card payment");
+                    case CreditCardPayment cc && cc.getCardNumber().length() < 16 ->
+                        new ValidationResult(false, "Invalid card number length");
+                    case CreditCardPayment cc ->
+                        new ValidationResult(true, "Valid credit card payment");
+                        
+                    case PayPalPayment pp && pp.getAmount() <= 0 ->
+                        new ValidationResult(false, "Invalid amount for PayPal payment");
+                    case PayPalPayment pp && !pp.getPaypalEmail().contains("@") ->
+                        new ValidationResult(false, "Invalid PayPal email format");
+                    case PayPalPayment pp ->
+                        new ValidationResult(true, "Valid PayPal payment");
+                        
+                    case CryptoPayment cp && cp.getAmount() <= 0 ->
+                        new ValidationResult(false, "Invalid amount for crypto payment");
+                    case CryptoPayment cp && !List.of("BTC", "ETH", "USDT").contains(cp.getCryptoCurrency()) ->
+                        new ValidationResult(false, "Unsupported cryptocurrency");
+                    case CryptoPayment cp ->
+                        new ValidationResult(true, "Valid crypto payment");
+                };
+            }
+            return new ValidationResult(false, "Invalid payment type");
+        }
+    }
+
+    record ValidationResult(boolean valid, String message) {}
+
+    @Test
+    @DisplayName("Test Advanced Pattern Matching Validation")
+    void testAdvancedPatternMatchingValidation() {
+        PaymentValidator validator = new PaymentValidator();
+        
+        // Test valid payments
+        Payment validCC = new CreditCardPayment(
+            "CC-004", 100.0, "4111111111111111", "Alice Smith"
+        );
+        assertTrue(validator.validatePayment(validCC).valid());
+        
+        // Test invalid amount
+        Payment invalidAmount = new PayPalPayment(
+            "PP-004", -50.0, "alice@example.com"
+        );
+        ValidationResult result = validator.validatePayment(invalidAmount);
+        assertFalse(result.valid());
+        assertEquals("Invalid amount for PayPal payment", result.message());
+        
+        // Test invalid crypto currency
+        Payment invalidCrypto = new CryptoPayment(
+            "CR-004", 1.0, "0x123456789", "XYZ"
+        );
+        result = validator.validatePayment(invalidCrypto);
+        assertFalse(result.valid());
+        assertEquals("Unsupported cryptocurrency", result.message());
+        
+        // Test invalid payment type
+        Object invalidPayment = new Object();
+        result = validator.validatePayment(invalidPayment);
+        assertFalse(result.valid());
+        assertEquals("Invalid payment type", result.message());
+    }
 }

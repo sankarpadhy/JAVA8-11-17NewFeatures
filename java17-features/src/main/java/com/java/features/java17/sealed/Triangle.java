@@ -22,4 +22,10 @@ public final class Triangle extends Shape {
     public double getHeight() {
         return height;
     }
+
+    public boolean isEquilateral() {
+        // In an equilateral triangle, height = √3/2 * base
+        double expectedHeight = (Math.sqrt(3) / 2) * base;
+        return Math.abs(height - expectedHeight) < 0.0001; // Using epsilon for double comparison
+    }
 }
