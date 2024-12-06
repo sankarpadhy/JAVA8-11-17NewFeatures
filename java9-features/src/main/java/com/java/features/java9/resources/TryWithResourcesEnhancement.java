@@ -4,7 +4,25 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 
 /**
- * Demonstrates the enhanced try-with-resources feature in Java 9
+ * Demonstrates the enhanced Try-With-Resources feature introduced in Java 9.
+ * This class showcases how Java 9 improves the try-with-resources statement
+ * by allowing effectively final variables to be used directly in the try block.
+ * 
+ * Key features demonstrated:
+ * - Using effectively final variables in try-with-resources
+ * - Improved readability with less code duplication
+ * - Proper resource management and automatic closing
+ * - Custom AutoCloseable resources
+ * 
+ * Example usage:
+ * ```java
+ * BufferedReader reader = new BufferedReader(new StringReader("Hello"));
+ * // Java 9 style - can use reader directly
+ * try (reader) {
+ *     String line = reader.readLine();
+ *     System.out.println(line);
+ * }
+ * ```
  */
 public class TryWithResourcesEnhancement {
 

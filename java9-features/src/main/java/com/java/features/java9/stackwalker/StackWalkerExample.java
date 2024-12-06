@@ -6,21 +6,46 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Demonstrates the Stack-Walking API introduced in Java 9.
- * 
- * What's New in Java 9:
- * -------------------
- * 1. StackWalker class
- * 2. Lazy stack walking
- * 3. Filtered stack traces
- * 4. Better performance than getStackTrace()
- * 
- * Key Benefits:
- * -----------
- * 1. More efficient stack trace processing
- * 2. Better memory usage
- * 3. Flexible filtering options
- * 4. Stream-based API
+ * Demonstrates the StackWalker API introduced in Java 9 for efficient
+ * stack trace handling and analysis. This API provides better performance
+ * and more control compared to the traditional stack trace methods.
+ *
+ * Key features demonstrated:
+ * - Walking stack frames lazily
+ * - Filtering stack frames
+ * - Collecting stack frame information
+ * - Performance optimizations
+ * - Security permission handling
+ *
+ * Example usage:
+ * ```java
+ * // Get caller class
+ * Class<?> caller = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE)
+ *     .getCallerClass();
+ *
+ * // Walk and filter frames
+ * StackWalker.getInstance().walk(frames ->
+ *     frames.filter(f -> f.getClassName().startsWith("com.example"))
+ *           .collect(Collectors.toList())
+ * );
+ *
+ * // Find specific frame
+ * Optional<StackFrame> frame = StackWalker.getInstance().walk(frames ->
+ *     frames.filter(f -> f.getMethodName().equals("targetMethod"))
+ *           .findFirst()
+ * );
+ * ```
+ *
+ * Performance benefits:
+ * - Lazy frame walking
+ * - Reduced memory overhead
+ * - Efficient filtering
+ * - No array allocation unless needed
+ *
+ * @see java.lang.StackWalker
+ * @see java.lang.StackWalker.Option
+ * @see java.lang.StackFrame
+ * @since Java 9
  */
 public class StackWalkerExample {
 

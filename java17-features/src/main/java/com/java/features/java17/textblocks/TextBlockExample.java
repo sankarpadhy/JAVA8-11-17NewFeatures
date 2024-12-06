@@ -1,9 +1,24 @@
 package com.java.features.java17.textblocks;
 
 /**
- * Demonstrates Text Blocks feature in Java 17.
- * Text blocks make it easier to write and maintain multiline strings,
- * especially useful for SQL queries, JSON, HTML, and other formatted text.
+ * Demonstrates Text Blocks feature stabilized in Java 15 and enhanced in Java 17.
+ * Text Blocks provide a clean and readable way to represent multi-line strings
+ * while preserving formatting and reducing escape sequence usage.
+ *
+ * Key features demonstrated:
+ * - Multi-line string literals with preserved indentation
+ * - String formatting with .formatted()
+ * - HTML content representation
+ * - JSON configuration examples
+ * - SQL query formatting
+ * - String interpolation techniques
+ *
+ * Example usage:
+ * ```java
+ * String json = getJsonConfig("MyApp", "1.0.0", 8080);
+ * String html = getHtmlTemplate("Welcome", "Hello World");
+ * String sql = getComplexSqlQuery("users", 10);
+ * ```
  */
 public class TextBlockExample {
 

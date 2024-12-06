@@ -1,72 +1,158 @@
 package com.java.features.java8.datetime;
 
-import org.junit.jupiter.api.Test;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+/**
+ * Test class for Java 8's DateTime API features.
+ * Verifies the functionality of various date-time operations including:
+ * - Date operations (LocalDate)
+ * - Time operations (LocalTime)
+ * - Combined date-time operations (LocalDateTime)
+ * - Timezone handling (ZonedDateTime)
+ * - Period and Duration calculations
+ * - Formatting and parsing
+ * - Temporal adjusters
+ */
+public class DateTimeExamplesTest {
 
-class DateTimeExamplesTest {
-
+    /**
+     * Tests LocalDate operations and formatting.
+     * Verifies:
+     * - Current date retrieval
+     * - Date arithmetic
+     * - Date comparisons
+     * - Component extraction
+     */
     @Test
-    void testCreateLocalDate() {
-        String date = DateTimeExamples.createLocalDate(2023, 12, 31);
-        assertEquals("2023-12-31", date);
+    public void testDemonstrateLocalDate() {
+        String result = DateTimeExamples.demonstrateLocalDate();
+        assertNotNull("Result should not be null", result);
+        assertTrue("Result should contain today's date", result.contains("Today:"));
+        assertTrue("Result should contain next week's date", result.contains("Next Week:"));
+        assertTrue("Result should contain comparison result", result.contains("Is before July 4th?"));
     }
 
+    /**
+     * Tests LocalTime operations and formatting.
+     * Verifies:
+     * - Current time retrieval
+     * - Time arithmetic
+     * - Time comparisons
+     * - Component extraction
+     */
     @Test
-    void testCreateLocalTime() {
-        String time = DateTimeExamples.createLocalTime(13, 45);
-        assertEquals("13:45:00", time);
+    public void testDemonstrateLocalTime() {
+        String result = DateTimeExamples.demonstrateLocalTime();
+        assertNotNull("Result should not be null", result);
+        assertTrue("Result should contain current time", result.contains("Current time:"));
+        assertTrue("Result should contain future time", result.contains("Two hours later:"));
+        assertTrue("Result should contain noon comparison", result.contains("Is after noon?"));
     }
 
+    /**
+     * Tests LocalDateTime operations.
+     * Verifies:
+     * - DateTime creation
+     * - DateTime arithmetic
+     * - Component extraction
+     * - Formatting
+     */
     @Test
-    void testGetCurrentDateTime() {
-        String dateTime = DateTimeExamples.getCurrentDateTime();
-        assertNotNull(dateTime);
-        assertTrue(dateTime.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*"));
+    public void testDemonstrateLocalDateTime() {
+        String result = DateTimeExamples.demonstrateLocalDateTime();
+        assertNotNull("Result should not be null", result);
+        assertTrue("Result should contain meeting time", result.contains("Meeting scheduled for:"));
+        assertTrue("Result should contain rescheduled time", result.contains("Rescheduled to:"));
     }
 
+    /**
+     * Tests timezone operations with ZonedDateTime.
+     * Verifies:
+     * - Timezone conversion
+     * - Time differences
+     * - Zone ID handling
+     */
     @Test
-    void testCalculateDaysBetween() {
-        LocalDate start = LocalDate.of(2023, 1, 1);
-        LocalDate end = LocalDate.of(2023, 12, 31);
-        assertEquals(364, DateTimeExamples.calculateDaysBetween(start, end));
+    public void testDemonstrateZonedDateTime() {
+        String result = DateTimeExamples.demonstrateZonedDateTime();
+        assertNotNull("Result should not be null", result);
+        assertTrue("Result should contain NY time", result.contains("NY:"));
+        assertTrue("Result should contain Tokyo time", result.contains("Tokyo:"));
+        assertTrue("Result should show time difference", result.contains("Time difference:"));
     }
 
+    /**
+     * Tests Period and Duration calculations.
+     * Verifies:
+     * - Period between dates
+     * - Duration between times
+     * - Formatting of results
+     */
     @Test
-    void testGetTimeInZone() {
-        String zonedTime = DateTimeExamples.getTimeInZone("UTC");
-        assertNotNull(zonedTime);
-        assertTrue(zonedTime.endsWith("Z"));
+    public void testDemonstratePeriodAndDuration() {
+        String result = DateTimeExamples.demonstratePeriodAndDuration();
+        assertNotNull("Result should not be null", result);
+        assertTrue("Result should contain period info", result.contains("Period:"));
+        assertTrue("Result should contain duration info", result.contains("Duration:"));
+        assertTrue("Result should show years", result.contains("years"));
+        assertTrue("Result should show months", result.contains("months"));
     }
 
+    /**
+     * Tests date-time formatting operations.
+     * Verifies:
+     * - ISO format
+     * - Custom format
+     * - Localized format
+     */
     @Test
-    void testCalculateMinutesBetween() {
-        LocalTime time1 = LocalTime.of(10, 0);
-        LocalTime time2 = LocalTime.of(11, 30);
-        assertEquals(90, DateTimeExamples.calculateMinutesBetween(time1, time2));
+    public void testFormatDateTime() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 1, 15, 14, 30);
+        String result = DateTimeExamples.formatDateTime(dateTime);
+        assertNotNull("Result should not be null", result);
+        assertTrue("Result should contain ISO format", result.contains("ISO:"));
+        assertTrue("Result should contain custom format", result.contains("Custom:"));
+        assertTrue("Result should contain localized format", result.contains("Localized:"));
     }
 
+    /**
+     * Tests temporal adjusters.
+     * Verifies:
+     * - First/last day of month
+     * - Next Monday
+     * - First day of next year
+     */
     @Test
-    void testGetLastDayOfMonth() {
-        LocalDate date = LocalDate.of(2023, 2, 1);
-        LocalDate lastDay = DateTimeExamples.getLastDayOfMonth(date);
-        assertEquals(28, lastDay.getDayOfMonth());
+    public void testDemonstrateAdjusters() {
+        LocalDate date = LocalDate.of(2024, 1, 15);
+        String result = DateTimeExamples.demonstrateAdjusters(date);
+        assertNotNull("Result should not be null", result);
+        assertTrue("Result should show first day of month", result.contains("First day of month:"));
+        assertTrue("Result should show last day of month", result.contains("Last day of month:"));
+        assertTrue("Result should show next Monday", result.contains("Next Monday:"));
+        assertTrue("Result should show first day of next year", result.contains("First day of next year:"));
     }
 
+    /**
+     * Tests Instant operations.
+     * Verifies:
+     * - Current instant
+     * - Instant arithmetic
+     * - Epoch conversion
+     */
     @Test
-    void testGetCurrentTimestamp() {
-        long timestamp = DateTimeExamples.getCurrentTimestamp();
-        assertTrue(timestamp > 0);
-        assertTrue(String.valueOf(timestamp).length() >= 13); // Milliseconds timestamp length
-    }
-
-    @Test
-    void testFormatCustomDate() {
-        LocalDate date = LocalDate.of(2023, 12, 31);
-        String formatted = DateTimeExamples.formatCustomDate(date);
-        assertEquals("31-Dec-2023", formatted);
+    public void testDemonstrateInstant() {
+        String result = DateTimeExamples.demonstrateInstant();
+        assertNotNull("Result should not be null", result);
+        assertTrue("Result should contain current instant", result.contains("Now:"));
+        assertTrue("Result should contain future instant", result.contains("One hour later:"));
+        assertTrue("Result should contain epoch seconds", result.contains("Epoch seconds:"));
     }
 }

@@ -1,58 +1,45 @@
 package com.java.features.java9.jshell;
 
 /**
- * Documentation and examples for using JShell - The Java REPL Tool introduced in Java 9
- * 
- * What is JShell?
- * -------------
- * JShell is Java's first official REPL (Read-Eval-Print Loop) tool.
- * It allows developers to:
- * 1. Quickly test Java code snippets
- * 2. Explore APIs interactively
- * 3. Prototype new code
- * 4. Learn Java in an interactive way
- * 
- * Key Features:
- * -----------
- * 1. Immediate expression evaluation
- * 2. Automatic variable declaration
- * 3. Automatic imports of common packages
- * 4. Command history and editing
- * 5. Tab completion
- * 6. Snippet management
- * 
- * Common JShell Commands:
- * --------------------
- * /help           - List all commands
- * /list           - List entered snippets
- * /vars           - List declared variables
- * /methods        - List declared methods
- * /imports        - List imported packages
- * /exit           - Exit JShell
- * 
- * Example Usage:
- * ------------
- * To start JShell:
- * {@code
- * > jshell
- * 
- * // Direct expression evaluation
- * jshell> 2 + 2
- * $1 ==> 4
- * 
- * // Variable declaration (type inference)
- * jshell> var message = "Hello, JShell!"
- * message ==> "Hello, JShell!"
- * 
- * // Method declaration
- * jshell> void greet(String name) {
- *    ...> System.out.println("Hello, " + name);
- *    ...> }
- * 
- * // Method invocation
- * jshell> greet("Java 9")
- * Hello, Java 9
+ * Demonstrates the JShell REPL (Read-Eval-Print Loop) tool introduced in Java 9.
+ * This class provides documentation and examples of using JShell for interactive
+ * Java code evaluation and rapid prototyping.
+ *
+ * Key features demonstrated:
+ * - Basic expression evaluation
+ * - Variable declarations and assignments
+ * - Method and class definitions
+ * - Import statements management
+ * - Tab completion functionality
+ * - Command history and navigation
+ * - Built-in JShell commands
+ *
+ * To use JShell:
+ * 1. Open terminal/command prompt
+ * 2. Type 'jshell'
+ * 3. Try these examples:
+ * ```java
+ * // Basic expressions
+ * 2 + 2
+ * "Hello, " + "JShell!"
+ *
+ * // Variable declaration
+ * var message = "Hello, World!"
+ * System.out.println(message)
+ *
+ * // Method definition
+ * void greet(String name) {
+ *     System.out.println("Hello, " + name + "!");
  * }
+ * greet("Java 9")
+ * ```
+ *
+ * Useful JShell commands:
+ * - /help - Show help
+ * - /list - List source code
+ * - /vars - List variables
+ * - /methods - List methods
+ * - /exit - Exit JShell
  */
 import java.util.Collections;
 

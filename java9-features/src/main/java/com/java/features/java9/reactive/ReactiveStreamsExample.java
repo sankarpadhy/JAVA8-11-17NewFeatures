@@ -8,23 +8,60 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Demonstrates the Reactive Streams API introduced in Java 9.
+ * This class showcases reactive programming concepts and patterns
+ * using the Flow API for handling asynchronous stream processing
+ * with non-blocking back pressure.
+ *
+ * Key concepts demonstrated:
+ * - Publisher-Subscriber pattern
+ * - Back pressure handling
+ * - Flow control
+ * - Error handling
+ * - Resource management
+ *
+ * Components of Reactive Streams:
+ * 1. Publisher: Source of data items
+ *    - Controls data flow
+ *    - Respects subscriber's request
+ *
+ * 2. Subscriber: Consumer of data items
+ *    - Requests data (back pressure)
+ *    - Processes items
+ *    - Handles completion/errors
+ *
+ * 3. Subscription: Controls the flow
+ *    - Links Publisher and Subscriber
+ *    - Manages request amounts
+ *    - Allows cancellation
+ *
+ * 4. Processor: Both Publisher and Subscriber
+ *    - Transforms data items
+ *    - Acts as intermediate step
+ *
+ * Example usage:
+ * ```java
+ * // Create publisher
+ * SubmissionPublisher<String> publisher = new SubmissionPublisher<>();
  * 
- * What's New in Java 9:
- * -------------------
- * 1. Flow API interfaces:
- *    - Publisher
- *    - Subscriber
- *    - Subscription
- *    - Processor
+ * // Create subscriber
+ * Flow.Subscriber<String> subscriber = new Flow.Subscriber<>() {
+ *     public void onSubscribe(Flow.Subscription s) {
+ *         s.request(Long.MAX_VALUE);
+ *     }
+ *     public void onNext(String item) {
+ *         System.out.println("Received: " + item);
+ *     }
+ *     public void onError(Throwable t) { }
+ *     public void onComplete() { }
+ * };
  * 
- * 2. SubmissionPublisher class
- * 
- * Key Concepts:
- * -----------
- * 1. Back pressure
- * 2. Non-blocking
- * 3. Asynchronous processing
- * 4. Stream processing
+ * // Connect them
+ * publisher.subscribe(subscriber);
+ * ```
+ *
+ * @see java.util.concurrent.Flow
+ * @see java.util.concurrent.SubmissionPublisher
+ * @since Java 9
  */
 public class ReactiveStreamsExample {
 
