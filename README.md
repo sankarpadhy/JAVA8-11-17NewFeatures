@@ -52,7 +52,7 @@ Java8-11-17/
 
 ## Maven Structure
 
-The project uses a multi-module Maven structure for managing different Java version features.
+The project uses a profile-based Maven structure for managing different Java version features. Each module is activated through its corresponding profile.
 
 ### Parent POM (Root `pom.xml`)
 
@@ -65,13 +65,33 @@ The project uses a multi-module Maven structure for managing different Java vers
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     
-    <!-- Define modules -->
-    <modules>
-        <module>java8-features</module>
-        <module>java9-features</module>
-        <module>java11-features</module>
-        <module>java17-features</module>
-    </modules>
+    <!-- Profile-based module activation -->
+    <profiles>
+        <profile>
+            <id>java8</id>
+            <modules>
+                <module>java8-features</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java9</id>
+            <modules>
+                <module>java9-features</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java11</id>
+            <modules>
+                <module>java11-features</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java17</id>
+            <modules>
+                <module>java17-features</module>
+            </modules>
+        </profile>
+    </profiles>
     
     <!-- Common properties used across all modules -->
     <properties>
@@ -116,6 +136,43 @@ The project uses a multi-module Maven structure for managing different Java vers
     </build>
 </project>
 ```
+
+### Parent POM Features
+
+1. **Project Packaging (`<packaging>pom</packaging>`)**
+   - Declares this as a parent/aggregator project
+   - Does not produce a JAR/WAR artifact
+   - Used to manage multiple child modules centrally
+
+2. **Profile-Based Module Management (`<profiles>`)**
+   - Enables selective module activation based on Java versions
+   - Each profile (java8, java9, java11, java17) activates its corresponding module
+   - Allows isolated building and testing of version-specific features
+   - Example usage: `mvn clean install -P java8` to build only Java 8 features
+
+3. **Centralized Property Management (`<properties>`)**
+   - Defines version numbers and configuration values
+   - Ensures consistency across all modules
+   - Includes:
+     * Java compiler versions
+     * Dependencies versions (e.g., JUnit)
+     * Plugin versions
+     * Project-wide settings (e.g., encoding)
+
+4. **Dependency Version Control (`<dependencyManagement>`)**
+   - Centralizes dependency versions for all modules
+   - Child modules inherit versions without explicitly declaring them
+   - Prevents version conflicts across modules
+   - Makes dependency updates easier to manage
+
+5. **Plugin Configuration Management (`<pluginManagement>`)**
+   - Standardizes build plugin configurations
+   - Ensures consistent build behavior across modules
+   - Includes:
+     * Compiler settings for each Java version
+     * Test execution configurations
+     * Code coverage and quality tools
+     * Resource handling
 
 ### Module POM (e.g., `java8-features/pom.xml`)
 
@@ -185,7 +242,7 @@ The project uses a multi-module Maven structure for managing different Java vers
 
 1. **Parent POM Features**:
    - `<packaging>pom</packaging>`: Indicates this is a parent project
-   - `<modules>`: Lists all child modules
+   - `<profiles>`: Lists all child modules with their corresponding profiles
    - `<properties>`: Defines variables used across modules
    - `<dependencyManagement>`: Controls versions of dependencies
    - `<pluginManagement>`: Defines common plugin configurations
